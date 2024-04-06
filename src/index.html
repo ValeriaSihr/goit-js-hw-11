@@ -4,18 +4,27 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vanilla App Template</title>
+    <title>Task 11</title>
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
-    <form class="search-form">
-      <input type="text" name="search" placeholder="Search images..." />
-      <button type="submit">Search</button>
-    </form>
-
-    <div class="loader-box"><div class="loader"></div></div>
-
-    <ul class="object-list gallery"></ul>
+    <div class="container">
+      <form class="search-form">
+        <input
+          class="search-img-input"
+          type="text"
+          name="data"
+          placeholder="Search images..."
+        />
+        <button class="btn" type="submit">Search</button>
+      </form>
+    </div>
+    <div class="css-loader">
+      <span class="loader"></span>
+    </div>
+    <div class="container">
+      <ul class="gallery"></ul>
+    </div>
 
     <script type="module" src="./main.js"></script>
   </body>

@@ -1,43 +1,49 @@
-import simpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
-
 export function createMarkup(array) {
-  const createGallery = array
+  return array
     .map(
       ({
+        tags,
+        likes,
         views,
         comments,
         downloads,
-        likes,
         webformatURL,
-        tags,
         largeImageURL,
-      }) => {
-        return `<li>
-      <div class="gallery">
-        <a href="${largeImageURL}">
-          <img class="img" src="${webformatURL}" alt="${tags}" width="360" height="200">
-          <ul class="list">
-            <li class="info-list"><span class="likes">Likes</span><span class="value">${likes}</span></li>
-            <li class="info-list"><span class="views">Views</span><span class="value">${views}</span></li>
-            <li class="info-list"><span class="comments">Comments</span><span class="value">${comments}</span></li>
-            <li class="info-list"><span class="downloads">Downloads</span><span class="value">${downloads}</span></li>
-          </ul>
-        </a>
-      </div>
-    </li>`;
-      }
+      }) =>
+        `<li class="gallery-item">
+                <a class="gallery-link" href="${largeImageURL}" >
+                   <img
+                     class = "gallery-image"
+                     src = "${webformatURL}"
+                     alt = "${tags}"
+                     />
+                 </a>
+                 <div class = "wrapper">
+                 <div class = "parameters">
+                 <span class ="title">Likes</span>
+                 <span class = "info">${likes}</span>
+                 </div>
+                  <div class = "parameters">
+                 <span class ="title">Views</span>
+                 <span class = "info">${views}</span>
+                 </div>
+                  <div class = "parameters">
+                 <span class ="title">Comments</span>
+                 <span class = "info">${comments}</span>
+                 </div>
+                  <div class = "parameters">
+                 <span class ="title">Downloads</span>
+                 <span class = "info">${downloads}</span>
+                 </div></div>
+            </li>`
     )
     .join('');
+}
 
-  const objectList = document.querySelector('.object-list');
-  objectList.innerHTML = createGallery;
+export function showLoading(element) {
+  element.style.display = 'block';
+}
 
-  const gallery = new simpleLightbox('gallery a', {
-    caption: true,
-    captionsData: 'alt',
-    captionDelay: 200,
-    showCounter: false,
-  });
-  return createGallery;
+export function hideLoading(element) {
+  element.style.display = 'none';
 }

@@ -1,44 +1,62 @@
-import * as renderFunction from './js/render-functions.js';
-import * as pixabayApi from './js/pixabay-api.js';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+import { objectSearch } from './js/pixabay-api';
+import { createMarkup } from './js/render-functions';
+import { showLoading } from './js/render-functions';
+import { hideLoading } from './js/render-functions';
 
-const searchForm = document.querySelector('.search-form');
-const search = document.querySelector('input');
-const objectList = document.querySelector('.object-list');
-const loader = document.querySelector('.loader-box');
+const form = document.querySelector('.search-form');
+const loader = document.querySelector('.css-loader');
+const gallery = document.querySelector('.gallery');
 
-searchForm.addEventListener('submit', onSubmit);
+form.addEventListener('submit', handelSubmit);
 
-function onSubmit(event) {
+function handelSubmit(event) {
   event.preventDefault();
-
-  if (!search.value) {
+  gallery.innerHTML = '';
+  const dataSearch = event.currentTarget.elements.data.value.trim();
+  if (dataSearch === '') {
     return iziToast.error({
-      timeout: 2000,
-      title: 'Error!',
       message:
         'Sorry, there are no images matching your search query. Please try again!',
+      position: 'bottomRight',
+      messageColor: 'white',
       backgroundColor: 'red',
-      closeOnClick: true,
-      position: 'topCenter',
+      progressBarColor: 'black',
     });
   }
-
-  const searchValue = search.value;
-
-  loader.style.display = 'flex';
-
-  pixabayApi
-    .objectSearch(searchValue)
+  showLoading(loader);
+  objectSearch(dataSearch)
     .then(data => {
-      objectList.innerHTML = renderFunction.createMarkup(data.hits);
-      searchForm.reset();
-
-      loader.style.display = 'none';
+      if (data.hits.length === 0) {
+        hideLoading(loader);
+        return iziToast.error({
+          message:
+            'Sorry, there are no images matching your search query. Please try again!',
+          position: 'bottomRight',
+          messageColor: 'white',
+          backgroundColor: 'red',
+          progressBarColor: 'black',
+        });
+      }
+      hideLoading(loader);
+      gallery.innerHTML = createMarkup(data.hits);
+      lightbox.refresh();
     })
     .catch(error => {
-      console.log(error);
-      loader.style.display = 'none';
+      iziToast.error({
+        message: `${error}`,
+      });
+    })
+    .finally(() => {
+      form.reset();
     });
 }
+
+const lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionsPosition: 'bottom',
+  captionsDelay: 250,
+});
